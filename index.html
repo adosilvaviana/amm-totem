@@ -1,0 +1,952 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<title>AMM Compra Fácil — Manifestação de interesse</title>
+<link rel="icon" href="logo-amm.png">
+<style>
+/* ===================================================================
+   AMM Compra Fácil — totem de adesão
+   TV 50" HORIZONTAL (1920x1080). Tudo dimensionado em vh para
+   sobreviver ao zoom do Windows: se a escala estiver em 150%, o
+   layout encolhe junto com a viewport em vez de estourar.
+   =================================================================== */
+:root{
+  --navy-900:#102A41; --navy-800:#163A57; --navy-700:#1E4A6D; --navy-600:#2A5F87;
+  --blue-300:#7FA6C4; --blue-100:#DCEBF7; --blue-50:#F0F6FB;
+  --red:#CC2027; --red-dark:#A91B21;
+  --gray-100:#F2F5F7; --gray-200:#DDE5EC; --muted:#5B738C;
+  --font:"Inter",system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+  --r:1.3vh; --r-lg:2.2vh;
+  --tap:7.4vh;              /* alvo mínimo de toque */
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;margin:0;overflow:hidden}
+body{
+  font-family:var(--font); background:var(--navy-900); color:#fff;
+  user-select:none; -webkit-user-select:none;
+  font-size:1.7vh; line-height:1.4;
+}
+input,select,textarea,button{font-family:inherit}
+.hidden{display:none !important}
+
+/* ---------------- TELA DE ATRAÇÃO ---------------- */
+.attract{
+  position:fixed;inset:0;z-index:60;display:grid;
+  grid-template-columns:1.05fr .95fr; align-items:center; gap:4vw; padding:0 7vw;
+  background:
+    radial-gradient(90% 120% at 12% 0%, #24608F 0%, transparent 60%),
+    radial-gradient(80% 120% at 95% 100%, #1C4466 0%, transparent 55%),
+    linear-gradient(135deg,var(--navy-800) 0%,var(--navy-900) 100%);
+}
+.attract.hide{display:none}
+.attract-l{display:flex;flex-direction:column;gap:3.4vh;align-items:flex-start}
+.plate{
+  background:#fff;border-radius:2.6vh;padding:3.4vh 4.4vh;
+  box-shadow:0 2.4vh 6vh rgba(0,0,0,.34)
+}
+.plate img{display:block;height:11vh;width:auto}
+.attract h1{
+  font-size:6.1vh;font-weight:800;line-height:1.04;margin:0;max-width:15ch;
+  letter-spacing:-.025em
+}
+.attract h1 b{color:var(--blue-300);font-weight:800}
+.attract p{font-size:2.5vh;color:var(--blue-100);max-width:30ch;margin:0;line-height:1.45}
+.attract-r{display:flex;flex-direction:column;align-items:center;gap:2.6vh}
+.pulse{
+  border:0;border-radius:99vh;padding:3.4vh 6.4vh;min-height:var(--tap);
+  font-size:3.1vh;font-weight:800;color:var(--navy-800);background:#fff;
+  box-shadow:0 0 0 0 rgba(255,255,255,.6);animation:p 2.2s infinite;cursor:pointer;
+  letter-spacing:-.01em
+}
+@keyframes p{0%{box-shadow:0 0 0 0 rgba(255,255,255,.5)}70%{box-shadow:0 0 0 5vh rgba(255,255,255,0)}100%{box-shadow:0 0 0 0 rgba(255,255,255,0)}}
+.attract .tag{font-size:1.9vh;color:var(--blue-300);letter-spacing:.06em}
+.attract-steps{display:flex;flex-direction:column;gap:1.5vh;margin-top:1vh}
+.attract-steps div{
+  display:flex;align-items:center;gap:1.6vh;font-size:2vh;color:var(--blue-100);
+  background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14);
+  border-radius:var(--r);padding:1.5vh 2.4vh
+}
+.attract-steps b{
+  flex:0 0 3.4vh;height:3.4vh;border-radius:50%;background:var(--blue-300);color:var(--navy-900);
+  display:grid;place-items:center;font-size:1.7vh;font-weight:800
+}
+
+/* ---------------- ESTRUTURA ---------------- */
+#app{height:100%;display:flex;flex-direction:column;background:#fff;color:var(--navy-900)}
+
+.top{
+  flex:0 0 auto;display:flex;align-items:center;gap:2.6vh;
+  padding:1.8vh 3.4vh;border-bottom:1px solid var(--gray-200);background:#fff
+}
+.mark{cursor:pointer;display:flex;align-items:center;gap:1.6vh;flex:0 0 auto}
+.mark img{display:block;height:5.4vh;width:auto}
+.mark em{
+  font-style:normal;font-size:1.35vh;font-weight:800;color:var(--muted);
+  letter-spacing:.2em;text-transform:uppercase;border-left:1px solid var(--gray-200);
+  padding-left:1.6vh
+}
+.bar{flex:1;height:1.2vh;border-radius:99vh;background:var(--gray-200);overflow:hidden}
+.bar i{display:block;height:100%;width:33%;border-radius:99vh;background:var(--navy-700);transition:width .35s ease}
+.step-n{font-size:1.8vh;font-weight:800;color:var(--muted);white-space:nowrap}
+.sync{font-size:1.5vh;font-weight:700;white-space:nowrap;min-width:9ch;text-align:right}
+
+/* botão de tela cheia — pedido do Ado: o totem abre no navegador */
+.fs{
+  flex:0 0 auto;display:flex;align-items:center;gap:1vh;cursor:pointer;
+  border:2px solid var(--gray-200);background:#fff;color:var(--navy-700);
+  border-radius:var(--r);padding:1.2vh 1.8vh;font-size:1.6vh;font-weight:800;
+  min-height:5.4vh
+}
+.fs:active{background:var(--blue-50)}
+.fs svg{width:2.2vh;height:2.2vh;fill:currentColor}
+
+.stage{flex:1;min-height:0;padding:3vh 3.4vh;overflow:hidden}
+.pane{height:100%;display:grid;grid-template-columns:1fr 1fr;gap:3.4vh;align-content:start}
+.pane.one{grid-template-columns:1fr}
+.col{min-width:0;display:flex;flex-direction:column;gap:2.4vh}
+.headline{grid-column:1/-1;margin:0 0 .4vh}
+.stepttl{font-size:4vh;font-weight:800;letter-spacing:-.025em;margin:0 0 .5vh}
+.stepsub{font-size:2vh;color:var(--muted);margin:0;line-height:1.45}
+
+.f{min-width:0}
+.f>label,.f .lab{display:block;font-size:2vh;font-weight:800;margin-bottom:1.1vh}
+.f .hint{font-size:1.65vh;color:var(--muted);font-weight:600;margin:-.6vh 0 1.1vh}
+.req{color:var(--red)}
+input[type=text],input[type=email],input[type=tel]{
+  width:100%;min-height:var(--tap);padding:1.6vh 2vh;font-size:2.4vh;font-weight:600;
+  border:2px solid var(--gray-200);border-radius:var(--r);background:#fff;color:var(--navy-900)
+}
+input::placeholder{color:#9BAEBF;font-weight:500}
+input:focus{outline:none;border-color:var(--navy-600);box-shadow:0 0 0 .5vh rgba(42,95,135,.16)}
+.err input{border-color:var(--red)}
+.errmsg{display:none;font-size:1.6vh;color:var(--red);font-weight:700;margin-top:.9vh}
+.err .errmsg{display:block}
+
+.chips{display:flex;flex-wrap:wrap;gap:1.2vh}
+.chip{
+  display:flex;align-items:center;min-height:var(--tap);padding:1.4vh 2.2vh;
+  border:2px solid var(--gray-200);border-radius:var(--r);background:#fff;
+  font-size:2vh;font-weight:700;cursor:pointer;line-height:1.2;color:var(--navy-900)
+}
+.chip input{position:absolute;opacity:0;pointer-events:none}
+.chip.on{border-color:var(--navy-700);background:var(--blue-50);color:var(--navy-700)}
+.chip.on::before{content:"✓";margin-right:.9vh;font-weight:900;color:var(--navy-700)}
+.err .chip{border-color:var(--red)}
+
+.ac{position:relative}
+.aclist{
+  position:absolute;left:0;right:0;top:calc(100% + .8vh);z-index:30;background:#fff;
+  border:2px solid var(--gray-200);border-radius:var(--r);max-height:44vh;overflow-y:auto;
+  box-shadow:0 2vh 5vh rgba(0,34,48,.2);display:none
+}
+.aclist.open{display:block}
+.aclist button{
+  display:block;width:100%;text-align:left;min-height:6.6vh;padding:1.7vh 2vh;border:0;
+  border-bottom:1px solid var(--gray-100);background:#fff;font-size:2.2vh;font-weight:600;
+  color:var(--navy-900);cursor:pointer
+}
+.aclist button:last-child{border-bottom:0}
+.aclist button:active{background:var(--blue-50)}
+.aclist mark{background:#FFE9A8;color:inherit;border-radius:3px}
+.picked{
+  display:flex;align-items:center;justify-content:space-between;gap:1.6vh;
+  min-height:var(--tap);padding:1.5vh 2vh;border:2px solid var(--navy-700);
+  border-radius:var(--r);background:var(--blue-50);font-size:2.4vh;font-weight:800;color:var(--navy-700)
+}
+.picked button{
+  border:0;background:transparent;color:var(--navy-700);font-size:1.7vh;font-weight:800;
+  text-decoration:underline;cursor:pointer;padding:1.2vh
+}
+
+/* label.consent, e não .consent: a regra .f>label acima tem a mesma
+   especificidade e venceria o display:flex, achatando o quadradinho. */
+label.consent{
+  display:flex;gap:1.6vh;align-items:flex-start;padding:2vh;margin:0;
+  border:2px solid var(--gray-200);
+  border-radius:var(--r);background:var(--gray-100);cursor:pointer;
+  font-size:1.75vh;font-weight:600
+}
+.consent.on{border-color:var(--navy-700);background:var(--blue-50)}
+.consent .box{
+  flex:0 0 3.6vh;height:3.6vh;border:2px solid var(--blue-300);border-radius:.8vh;background:#fff;
+  display:grid;place-items:center;font-size:2.4vh;font-weight:900;color:transparent;margin-top:.2vh
+}
+.consent.on .box{background:var(--navy-700);border-color:var(--navy-700);color:#fff}
+.consent input{position:absolute;opacity:0;pointer-events:none}
+.consent span.txt{font-size:1.75vh;line-height:1.45;font-weight:600;color:var(--navy-800)}
+.err .consent{border-color:var(--red)}
+
+.nav{
+  flex:0 0 auto;display:flex;align-items:center;gap:2vh;justify-content:space-between;
+  padding:2.2vh 3.4vh;border-top:1px solid var(--gray-200);background:#fff
+}
+.btn{
+  min-height:9vh;padding:0 5.4vh;border:0;border-radius:var(--r-lg);font-size:2.8vh;
+  font-weight:800;cursor:pointer;letter-spacing:-.01em
+}
+.btn--main{background:var(--navy-700);color:#fff;box-shadow:0 1.4vh 3vh rgba(30,74,109,.28)}
+.btn--main:active{background:var(--navy-800)}
+.btn--ghost{background:#fff;color:var(--muted);border:2px solid var(--gray-200)}
+.navhint{font-size:1.6vh;color:var(--muted);font-weight:600}
+
+/* ---------------- CONFIRMAÇÃO ---------------- */
+.done{
+  position:fixed;inset:0;z-index:70;display:none;flex-direction:column;
+  align-items:center;justify-content:center;gap:2.6vh;text-align:center;padding:0 8vw;
+  background:linear-gradient(135deg,var(--navy-700) 0%,var(--navy-900) 100%)
+}
+.done.show{display:flex}
+.tick{
+  width:14vh;height:14vh;border-radius:50%;background:#fff;color:var(--navy-700);
+  display:grid;place-items:center;font-size:8vh;font-weight:900;
+  box-shadow:0 2vh 6vh rgba(0,0,0,.3)
+}
+.done h2{font-size:5.4vh;font-weight:800;margin:0;letter-spacing:-.025em}
+.done p{font-size:2.6vh;color:var(--blue-100);margin:0;max-width:52ch;line-height:1.5}
+.again{
+  margin-top:1.4vh;border:0;border-radius:99vh;padding:2.8vh 5.4vh;min-height:var(--tap);
+  font-size:2.6vh;font-weight:800;background:#fff;color:var(--navy-800);cursor:pointer
+}
+.cd{font-size:1.8vh;color:var(--blue-300);letter-spacing:.05em}
+
+/* ---------------- PAINEL DA EQUIPE ---------------- */
+.admin{
+  position:fixed;inset:0;z-index:90;display:none;align-items:center;justify-content:center;
+  background:rgba(8,20,32,.82);padding:4vh
+}
+.admin.show{display:flex}
+.card{
+  background:#fff;color:var(--navy-900);border-radius:2.4vh;padding:4vh;width:min(70vh,92vw);
+  box-shadow:0 3vh 8vh rgba(0,0,0,.45);max-height:92vh;overflow-y:auto
+}
+.card h3{margin:0 0 .8vh;font-size:3vh;font-weight:800}
+.card .s{margin:0 0 2.4vh;font-size:1.8vh;color:var(--muted);line-height:1.5}
+.card .n{font-size:8vh;font-weight:800;color:var(--navy-700);line-height:1;margin:1vh 0}
+.card input{
+  width:100%;min-height:var(--tap);padding:1.6vh 2vh;font-size:3.4vh;text-align:center;
+  letter-spacing:.7em;border:2px solid var(--gray-200);border-radius:var(--r);font-weight:800
+}
+.card .row{display:flex;gap:1.4vh;margin-top:1.6vh}
+.card button{
+  flex:1;min-height:7vh;border:2px solid var(--gray-200);background:#fff;color:var(--navy-800);
+  border-radius:var(--r);font-size:1.9vh;font-weight:800;cursor:pointer;padding:0 1.4vh
+}
+.card button.p{background:var(--navy-700);color:#fff;border-color:var(--navy-700)}
+.card button.d{background:#fff;color:var(--red);border-color:#F3C9CC}
+.kv{
+  display:flex;justify-content:space-between;gap:1.4vh;font-size:1.8vh;
+  padding:1.2vh 0;border-bottom:1px solid var(--gray-100)
+}
+.kv b{font-weight:800}
+
+/* ---------------- RETRATO (se virarem a TV) ---------------- */
+@media (orientation:portrait){
+  .attract{grid-template-columns:1fr;text-align:center;padding:0 8vw;gap:4vh;align-content:center}
+  .attract-l{align-items:center}
+  .attract h1{font-size:4.6vh;max-width:18ch}
+  .pane{grid-template-columns:1fr;overflow-y:auto}
+  .stage{overflow-y:auto}
+}
+</style>
+</head>
+<body>
+
+<!-- ============ ATRAÇÃO ============ -->
+<section class="attract" id="attract">
+  <div class="attract-l">
+    <span class="plate"><img src="logo-amm.png" alt="AMM Compra Fácil"></span>
+    <h1>Leve o <b>Compra Fácil</b> para o seu município</h1>
+    <p>Manifeste o interesse aqui. A AMM envia o termo de adesão e agenda o treinamento da sua equipe.</p>
+  </div>
+  <div class="attract-r">
+    <button class="pulse" id="start">Começar &nbsp;→</button>
+    <div class="tag">LEVA MENOS DE 1 MINUTO</div>
+    <div class="attract-steps">
+      <div><b>1</b> Município e órgão</div>
+      <div><b>2</b> Seus dados de contato</div>
+      <div><b>3</b> Como o município compra hoje</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FORMULÁRIO ============ -->
+<div id="app">
+  <header class="top">
+    <div class="mark" id="mark">
+      <img src="logo-amm.png" alt="AMM Compra Fácil">
+      <em id="totemtag">Adesão</em>
+    </div>
+    <div class="bar"><i id="barfill"></i></div>
+    <div class="step-n" id="stepn">1 de 3</div>
+    <div class="sync" id="sync"></div>
+    <button class="fs" id="fsbtn" type="button" title="Tela cheia">
+      <svg id="fsicon" viewBox="0 0 24 24"><path d="M4 9V4h5v2H6v3H4zm11-5h5v5h-2V6h-3V4zM4 15h2v3h3v2H4v-5zm14 3v-3h2v5h-5v-2h3z"/></svg>
+      <span id="fstxt">Tela cheia</span>
+    </button>
+  </header>
+
+  <main class="stage">
+
+    <!-- PASSO 1 -->
+    <section class="pane" data-step="1">
+      <div class="headline">
+        <h2 class="stepttl">Qual é o seu município?</h2>
+        <p class="stepsub">Comece digitando o nome. A lista filtra sozinha.</p>
+      </div>
+      <div class="col">
+        <div class="f" id="f-mun">
+          <label for="mun">Município <span class="req">*</span></label>
+          <div class="ac">
+            <input type="text" id="mun" autocomplete="off" placeholder="Digite o nome do município">
+            <div class="aclist" id="aclist"></div>
+          </div>
+          <div class="picked hidden" id="munpicked">
+            <span id="munpickedtxt"></span>
+            <button type="button" id="munclear">trocar</button>
+          </div>
+          <div class="errmsg">Escolha um município da lista.</div>
+        </div>
+      </div>
+      <div class="col">
+        <div class="f" id="f-orgao">
+          <span class="lab">Tipo de órgão <span class="req">*</span></span>
+          <div class="chips" data-single="orgao">
+            <label class="chip"><input type="radio" name="orgao" value="Prefeitura">Prefeitura</label>
+            <label class="chip"><input type="radio" name="orgao" value="Câmara Municipal">Câmara Municipal</label>
+            <label class="chip"><input type="radio" name="orgao" value="Consórcio">Consórcio</label>
+            <label class="chip"><input type="radio" name="orgao" value="Autarquia / SAAE">Autarquia / SAAE</label>
+            <label class="chip"><input type="radio" name="orgao" value="Outro">Outro</label>
+          </div>
+          <div class="errmsg">Selecione o tipo de órgão.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PASSO 2 -->
+    <section class="pane hidden" data-step="2">
+      <div class="headline">
+        <h2 class="stepttl">Seus dados de contato</h2>
+        <p class="stepsub">É por aqui que a AMM envia o termo de adesão.</p>
+      </div>
+      <div class="col">
+        <div class="f" id="f-nome">
+          <label for="nome">Nome completo <span class="req">*</span></label>
+          <input type="text" id="nome" autocomplete="off" placeholder="Seu nome">
+          <div class="errmsg">Informe seu nome completo.</div>
+        </div>
+        <div class="f" id="f-fone">
+          <label for="fone">Celular / WhatsApp <span class="req">*</span></label>
+          <input type="tel" id="fone" inputmode="numeric" autocomplete="off" placeholder="(31) 90000-0000" maxlength="16">
+          <div class="errmsg">Informe um celular com DDD.</div>
+        </div>
+        <div class="f" id="f-email">
+          <label for="email">E-mail <span class="req">*</span></label>
+          <input type="email" id="email" inputmode="email" autocomplete="off" autocapitalize="none" placeholder="nome@municipio.mg.gov.br">
+          <div class="errmsg">Informe um e-mail válido.</div>
+        </div>
+      </div>
+      <div class="col">
+        <div class="f" id="f-cargo">
+          <span class="lab">Cargo <span class="req">*</span></span>
+          <div class="chips" data-single="cargo">
+            <label class="chip"><input type="radio" name="cargo" value="Prefeito(a)">Prefeito(a)</label>
+            <label class="chip"><input type="radio" name="cargo" value="Vice-prefeito(a)">Vice-prefeito(a)</label>
+            <label class="chip"><input type="radio" name="cargo" value="Secretário(a)">Secretário(a)</label>
+            <label class="chip"><input type="radio" name="cargo" value="Agente de contratação">Agente de contratação</label>
+            <label class="chip"><input type="radio" name="cargo" value="Pregoeiro(a)">Pregoeiro(a)</label>
+            <label class="chip"><input type="radio" name="cargo" value="Setor de compras">Setor de compras</label>
+            <label class="chip"><input type="radio" name="cargo" value="Assessoria">Assessoria</label>
+            <label class="chip"><input type="radio" name="cargo" value="Outro">Outro</label>
+          </div>
+          <div class="errmsg">Selecione seu cargo.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PASSO 3 -->
+    <section class="pane hidden" data-step="3">
+      <div class="headline">
+        <h2 class="stepttl">Como o município compra hoje</h2>
+        <p class="stepsub">Três perguntas rápidas para a AMM preparar o atendimento certo.</p>
+      </div>
+      <div class="col">
+        <div class="f" id="f-plat">
+          <span class="lab">O município usa plataforma de licitação eletrônica? <span class="req">*</span></span>
+          <div class="chips" data-single="plat">
+            <label class="chip"><input type="radio" name="plat" value="Sim, o AMM-Licita">Sim, o AMM-Licita</label>
+            <label class="chip"><input type="radio" name="plat" value="Sim, outra">Sim, outra</label>
+            <label class="chip"><input type="radio" name="plat" value="Não">Não</label>
+          </div>
+          <div class="errmsg">Selecione uma opção.</div>
+        </div>
+        <div class="f" id="f-vol">
+          <span class="lab">Quantos processos por mês, em média? <span class="req">*</span></span>
+          <div class="chips" data-single="vol">
+            <label class="chip"><input type="radio" name="vol" value="Até 5">Até 5</label>
+            <label class="chip"><input type="radio" name="vol" value="6 a 15">6 a 15</label>
+            <label class="chip"><input type="radio" name="vol" value="16 a 30">16 a 30</label>
+            <label class="chip"><input type="radio" name="vol" value="Mais de 30">Mais de 30</label>
+            <label class="chip"><input type="radio" name="vol" value="Não sei">Não sei</label>
+          </div>
+          <div class="errmsg">Selecione uma opção.</div>
+        </div>
+      </div>
+      <div class="col">
+        <div class="f">
+          <span class="lab">O que mais interessa agora?</span>
+          <div class="hint">Pode marcar mais de um.</div>
+          <div class="chips" data-multi="interesse">
+            <label class="chip"><input type="checkbox" name="interesse" value="Fase interna (ETP e TR)">Fase interna (ETP e TR)</label>
+            <label class="chip"><input type="checkbox" name="interesse" value="Pregão eletrônico">Pregão eletrônico</label>
+            <label class="chip"><input type="checkbox" name="interesse" value="Dispensa eletrônica">Dispensa eletrônica</label>
+            <label class="chip"><input type="checkbox" name="interesse" value="Marketplace">Marketplace</label>
+            <label class="chip"><input type="checkbox" name="interesse" value="Credenciamento">Credenciamento</label>
+            <label class="chip"><input type="checkbox" name="interesse" value="Treinamento da equipe">Treinamento da equipe</label>
+          </div>
+        </div>
+        <div class="f">
+          <span class="lab">Próximos passos</span>
+          <div class="chips" data-multi="proximo">
+            <label class="chip"><input type="checkbox" name="proximo" value="Receber o termo de adesão">Quero receber o termo de adesão</label>
+            <label class="chip"><input type="checkbox" name="proximo" value="Agendar treinamento">Quero agendar treinamento</label>
+          </div>
+        </div>
+        <div class="f" id="f-lgpd">
+          <label class="consent" id="consent">
+            <span class="box">✓</span>
+            <input type="checkbox" id="lgpd">
+            <span class="txt">Autorizo a Associação Mineira de Municípios e a AR Digital a usarem os dados acima para tratar da adesão do meu órgão ao AMM Compra Fácil e para entrar em contato comigo sobre isso. Lei nº 13.709/2018 (LGPD).</span>
+          </label>
+          <div class="errmsg">É necessário autorizar para enviar.</div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="nav">
+    <button class="btn btn--ghost hidden" id="back">Voltar</button>
+    <span class="navhint" id="navhint">Campos com <span class="req">*</span> são obrigatórios</span>
+    <button class="btn btn--main" id="next">Continuar &nbsp;→</button>
+  </footer>
+</div>
+
+<!-- ============ CONFIRMAÇÃO ============ -->
+<section class="done" id="done">
+  <div class="tick">✓</div>
+  <h2 id="donettl">Pronto!</h2>
+  <p id="donetxt"></p>
+  <button class="again" id="again">Novo cadastro</button>
+  <div class="cd" id="cd"></div>
+</section>
+
+<!-- ============ PAINEL DA EQUIPE ============ -->
+<section class="admin" id="admin">
+  <div class="card">
+    <div id="pinview">
+      <h3>Painel da equipe</h3>
+      <p class="s">Digite o PIN para ver a captação deste totem.</p>
+      <input type="tel" id="pin" inputmode="numeric" maxlength="4" placeholder="····">
+      <div class="row">
+        <button id="pinok" class="p">Entrar</button>
+        <button id="pincancel">Fechar</button>
+      </div>
+    </div>
+    <div id="panel" class="hidden">
+      <h3>Captação neste totem</h3>
+      <div class="n" id="count">0</div>
+      <div class="kv"><span>Totem</span><b id="k-totem">—</b></div>
+      <div class="kv"><span>Enviadas para a planilha</span><b id="k-ok">0</b></div>
+      <div class="kv"><span>Na fila (sem internet)</span><b id="k-fila">0</b></div>
+      <div class="kv"><span>Última ficha</span><b id="k-ult">—</b></div>
+      <div class="row">
+        <button class="p" id="csv">Baixar CSV</button>
+        <button id="copy">Copiar tudo</button>
+      </div>
+      <div class="row">
+        <button id="resync">Enviar agora</button>
+        <button id="close">Fechar</button>
+      </div>
+      <div class="row">
+        <button class="d" id="wipe">Apagar tudo deste totem</button>
+      </div>
+      <p class="s" style="margin:2.4vh 0 0">As fichas ficam gravadas neste navegador. Baixe o CSV antes de apagar.</p>
+    </div>
+  </div>
+</section>
+
+<script>
+/* 853 municípios de Minas Gerais — IBGE */
+const MUNICIPIOS=["Abadia dos Dourados","Abaeté","Abre Campo","Acaiaca","Aguanil","Aimorés","Aiuruoca","Alagoa","Albertina","Alfenas","Alfredo Vasconcelos","Almenara","Alpercata","Alpinópolis","Alterosa","Alto Caparaó","Alto Jequitibá","Alto Rio Doce","Alvarenga","Alvinópolis","Alvorada de Minas","Além Paraíba","Amparo do Serra","Andradas","Andrelândia","Angelândia","Antônio Carlos","Antônio Dias","Antônio Prado de Minas","Aracitaba","Araguari","Arantina","Araponga","Araporã","Arapuá","Araxá","Araçaí","Araçuaí","Araújos","Arceburgo","Arcos","Areado","Argirita","Aricanduva","Arinos","Astolfo Dutra","Ataléia","Augusto de Lima","Açucena","Baependi","Baldim","Bambuí","Bandeira","Bandeira do Sul","Barbacena","Barra Longa","Barroso","Barão de Cocais","Barão do Monte Alto","Bela Vista de Minas","Belmiro Braga","Belo Horizonte","Belo Oriente","Belo Vale","Berilo","Berizal","Bertópolis","Betim","Bias Fortes","Bicas","Biquinhas","Boa Esperança","Bocaina de Minas","Bocaiúva","Bom Despacho","Bom Jardim de Minas","Bom Jesus da Penha","Bom Jesus do Amparo","Bom Jesus do Galho","Bom Repouso","Bom Sucesso","Bonfim","Bonfinópolis de Minas","Bonito de Minas","Borda da Mata","Botelhos","Botumirim","Brasilândia de Minas","Brasília de Minas","Brazópolis","Braúnas","Brumadinho","Brás Pires","Bueno Brandão","Buenópolis","Bugre","Buritis","Buritizeiro","Cabeceira Grande","Cabo Verde","Cachoeira Dourada","Cachoeira da Prata","Cachoeira de Minas","Cachoeira de Pajeú","Caetanópolis","Caeté","Caiana","Cajuri","Caldas","Camacho","Camanducaia","Cambuquira","Cambuí","Campanha","Campanário","Campestre","Campina Verde","Campo Azul","Campo Belo","Campo Florido","Campo do Meio","Campos Altos","Campos Gerais","Cana Verde","Canaã","Candeias","Cantagalo","Canápolis","Caparaó","Capela Nova","Capelinha","Capetinga","Capim Branco","Capinópolis","Capitão Andrade","Capitão Enéas","Capitólio","Caputira","Caranaíba","Carandaí","Carangola","Caratinga","Caraí","Carbonita","Careaçu","Carlos Chagas","Carmo da Cachoeira","Carmo da Mata","Carmo de Minas","Carmo do Cajuru","Carmo do Paranaíba","Carmo do Rio Claro","Carmésia","Carmópolis de Minas","Carneirinho","Carrancas","Carvalhos","Carvalhópolis","Casa Grande","Cascalho Rico","Cataguases","Catas Altas","Catas Altas da Noruega","Catuji","Catuti","Caxambu","Cedro do Abaeté","Central de Minas","Centralina","Chalé","Chapada Gaúcha","Chapada do Norte","Chiador","Chácara","Cipotânea","Claraval","Claro dos Poções","Cláudio","Coimbra","Coluna","Comendador Gomes","Comercinho","Conceição da Aparecida","Conceição da Barra de Minas","Conceição das Alagoas","Conceição das Pedras","Conceição de Ipanema","Conceição do Mato Dentro","Conceição do Pará","Conceição do Rio Verde","Conceição dos Ouros","Confins","Congonhal","Congonhas","Congonhas do Norte","Conquista","Conselheiro Lafaiete","Conselheiro Pena","Consolação","Contagem","Coqueiral","Coração de Jesus","Cordisburgo","Cordislândia","Corinto","Coroaci","Coromandel","Coronel Fabriciano","Coronel Murta","Coronel Pacheco","Coronel Xavier Chaves","Couto de Magalhães de Minas","Cristais","Cristiano Otoni","Cristina","Cristália","Crisólita","Crucilândia","Cruzeiro da Fortaleza","Cruzília","Cuparaque","Curral de Dentro","Curvelo","Cássia","Córrego Danta","Córrego Fundo","Córrego Novo","Córrego do Bom Jesus","Cônego Marinho","Datas","Delfim Moreira","Delfinópolis","Delta","Descoberto","Desterro de Entre Rios","Desterro do Melo","Diamantina","Diogo de Vasconcelos","Dionísio","Divino","Divino das Laranjeiras","Divinolândia de Minas","Divinésia","Divinópolis","Divisa Alegre","Divisa Nova","Divisópolis","Dom Bosco","Dom Cavati","Dom Joaquim","Dom Silvério","Dom Viçoso","Dona Euzébia","Dores de Campos","Dores de Guanhães","Dores do Indaiá","Dores do Turvo","Doresópolis","Douradoquara","Durandé","Elói Mendes","Engenheiro Caldas","Engenheiro Navarro","Entre Folhas","Entre Rios de Minas","Ervália","Esmeraldas","Espera Feliz","Espinosa","Espírito Santo do Dourado","Estiva","Estrela Dalva","Estrela do Indaiá","Estrela do Sul","Eugenópolis","Ewbank da Câmara","Extrema","Fama","Faria Lemos","Felisburgo","Felixlândia","Felício dos Santos","Fernandes Tourinho","Ferros","Fervedouro","Florestal","Formiga","Formoso","Fortaleza de Minas","Fortuna de Minas","Francisco Badaró","Francisco Dumont","Francisco Sá","Franciscópolis","Frei Gaspar","Frei Inocêncio","Frei Lagonegro","Fronteira","Fronteira dos Vales","Fruta de Leite","Frutal","Funilândia","Galiléia","Gameleiras","Glaucilândia","Goiabeira","Goianá","Gonzaga","Gonçalves","Gouveia","Governador Valadares","Grupiara","Grão Mogol","Guanhães","Guapé","Guaraciaba","Guaraciama","Guarani","Guaranésia","Guarará","Guarda-Mor","Guaxupé","Guidoval","Guimarânia","Guiricema","Gurinhatã","Heliodora","Iapu","Ibertioga","Ibiaí","Ibiracatu","Ibiraci","Ibirité","Ibitiúra de Minas","Ibituruna","Ibiá","Icaraí de Minas","Igarapé","Igaratinga","Iguatama","Ijaci","Ilicínea","Imbé de Minas","Inconfidentes","Indaiabira","Indianópolis","Ingaí","Inhapim","Inhaúma","Inimutaba","Ipaba","Ipanema","Ipatinga","Ipiaçu","Ipuiúna","Iraí de Minas","Itabira","Itabirinha","Itabirito","Itacambira","Itacarambi","Itaguara","Itaipé","Itajubá","Itamarandiba","Itamarati de Minas","Itambacuri","Itambé do Mato Dentro","Itamogi","Itamonte","Itanhandu","Itanhomi","Itaobim","Itapagipe","Itapecerica","Itapeva","Itatiaiuçu","Itaverava","Itaú de Minas","Itaúna","Itinga","Itueta","Ituiutaba","Itumirim","Iturama","Itutinga","Jaboticatubas","Jacinto","Jacutinga","Jacuí","Jaguaraçu","Jampruca","Janaúba","Januária","Japaraíba","Japonvar","Jaíba","Jeceaba","Jenipapo de Minas","Jequeri","Jequitaí","Jequitibá","Jequitinhonha","Jesuânia","Joanésia","Joaquim Felício","Joaíma","Jordânia","Josenópolis","José Gonçalves de Minas","José Raydan","João Monlevade","João Pinheiro","Juatuba","Juiz de Fora","Juramento","Juruaia","Juvenília","Ladainha","Lagamar","Lagoa Dourada","Lagoa Formosa","Lagoa Grande","Lagoa Santa","Lagoa da Prata","Lagoa dos Patos","Lajinha","Lambari","Lamim","Laranjal","Lassance","Lavras","Leandro Ferreira","Leme do Prado","Leopoldina","Liberdade","Lima Duarte","Limeira do Oeste","Lontra","Luisburgo","Luislândia","Luminárias","Luz","Machacalis","Machado","Madre de Deus de Minas","Malacacheta","Mamonas","Manga","Manhuaçu","Manhumirim","Mantena","Mar de Espanha","Maravilhas","Maria da Fé","Mariana","Marilac","Maripá de Minas","Marliéria","Marmelópolis","Martinho Campos","Martins Soares","Mata Verde","Materlândia","Mateus Leme","Mathias Lobato","Matias Barbosa","Matias Cardoso","Matipó","Mato Verde","Matozinhos","Matutina","Medeiros","Medina","Mendes Pimentel","Mercês","Mesquita","Minas Novas","Minduri","Mirabela","Miradouro","Miravânia","Miraí","Moeda","Moema","Monjolos","Monsenhor Paulo","Montalvânia","Monte Alegre de Minas","Monte Azul","Monte Belo","Monte Carmelo","Monte Formoso","Monte Santo de Minas","Monte Sião","Montes Claros","Montezuma","Morada Nova de Minas","Morro da Garça","Morro do Pilar","Munhoz","Muriaé","Mutum","Muzambinho","Mário Campos","Nacip Raydan","Nanuque","Naque","Natalândia","Natércia","Nazareno","Nepomuceno","Ninheira","Nova Belém","Nova Era","Nova Lima","Nova Módica","Nova Ponte","Nova Porteirinha","Nova Resende","Nova Serrana","Nova União","Novo Cruzeiro","Novo Oriente de Minas","Novorizonte","Olaria","Olhos-d'Água","Oliveira","Oliveira Fortes","Olímpio Noronha","Onça de Pitangui","Oratórios","Orizânia","Ouro Branco","Ouro Fino","Ouro Preto","Ouro Verde de Minas","Padre Carvalho","Padre Paraíso","Pai Pedro","Paineiras","Pains","Paiva","Palma","Palmópolis","Papagaios","Paracatu","Paraguaçu","Paraisópolis","Paraopeba","Pará de Minas","Passa Quatro","Passa Tempo","Passa Vinte","Passabém","Passos","Patis","Patos de Minas","Patrocínio","Patrocínio do Muriaé","Paula Cândido","Paulistas","Pavão","Pedra Azul","Pedra Bonita","Pedra Dourada","Pedra do Anta","Pedra do Indaiá","Pedralva","Pedras de Maria da Cruz","Pedrinópolis","Pedro Leopoldo","Pedro Teixeira","Pequeri","Pequi","Perdigão","Perdizes","Perdões","Periquito","Pescador","Peçanha","Piau","Piedade de Caratinga","Piedade de Ponte Nova","Piedade do Rio Grande","Piedade dos Gerais","Pimenta","Pingo-d'Água","Pintópolis","Piracema","Pirajuba","Piranga","Piranguinho","Piranguçu","Pirapetinga","Pirapora","Piraúba","Pitangui","Piumhi","Planura","Pocrane","Pompéu","Ponte Nova","Ponto Chique","Ponto dos Volantes","Porteirinha","Porto Firme","Poté","Pouso Alegre","Pouso Alto","Poço Fundo","Poços de Caldas","Prados","Prata","Pratinha","Pratápolis","Presidente Bernardes","Presidente Juscelino","Presidente Kubitschek","Presidente Olegário","Prudente de Morais","Quartel Geral","Queluzito","Raposos","Raul Soares","Recreio","Reduto","Resende Costa","Resplendor","Ressaquinha","Riachinho","Riacho dos Machados","Ribeirão Vermelho","Ribeirão das Neves","Rio Acima","Rio Casca","Rio Doce","Rio Espera","Rio Manso","Rio Novo","Rio Paranaíba","Rio Pardo de Minas","Rio Piracicaba","Rio Pomba","Rio Preto","Rio Vermelho","Rio do Prado","Ritápolis","Rochedo de Minas","Rodeiro","Romaria","Rosário da Limeira","Rubelita","Rubim","Sabará","Sabinópolis","Sacramento","Salinas","Salto da Divisa","Santa Bárbara","Santa Bárbara do Leste","Santa Bárbara do Monte Verde","Santa Bárbara do Tugúrio","Santa Cruz de Minas","Santa Cruz de Salinas","Santa Cruz do Escalvado","Santa Efigênia de Minas","Santa Fé de Minas","Santa Helena de Minas","Santa Juliana","Santa Luzia","Santa Margarida","Santa Maria de Itabira","Santa Maria do Salto","Santa Maria do Suaçuí","Santa Rita de Caldas","Santa Rita de Ibitipoca","Santa Rita de Jacutinga","Santa Rita de Minas","Santa Rita do Itueto","Santa Rita do Sapucaí","Santa Rosa da Serra","Santa Vitória","Santana da Vargem","Santana de Cataguases","Santana de Pirapama","Santana do Deserto","Santana do Garambéu","Santana do Jacaré","Santana do Manhuaçu","Santana do Paraíso","Santana do Riacho","Santana dos Montes","Santo Antônio do Amparo","Santo Antônio do Aventureiro","Santo Antônio do Grama","Santo Antônio do Itambé","Santo Antônio do Jacinto","Santo Antônio do Monte","Santo Antônio do Retiro","Santo Antônio do Rio Abaixo","Santo Hipólito","Santos Dumont","Sapucaí-Mirim","Sardoá","Sarzedo","Sem-Peixe","Senador Amaral","Senador Cortes","Senador Firmino","Senador José Bento","Senador Modestino Gonçalves","Senhora de Oliveira","Senhora do Porto","Senhora dos Remédios","Sericita","Seritinga","Serra Azul de Minas","Serra da Saudade","Serra do Salitre","Serra dos Aimorés","Serrania","Serranos","Serranópolis de Minas","Serro","Sete Lagoas","Setubinha","Silveirânia","Silvianópolis","Simonésia","Simão Pereira","Sobrália","Soledade de Minas","São Bento Abade","São Brás do Suaçuí","São Domingos das Dores","São Domingos do Prata","São Francisco","São Francisco de Paula","São Francisco de Sales","São Francisco do Glória","São Félix de Minas","São Geraldo","São Geraldo da Piedade","São Geraldo do Baixio","São Gonçalo do Abaeté","São Gonçalo do Pará","São Gonçalo do Rio Abaixo","São Gonçalo do Rio Preto","São Gonçalo do Sapucaí","São Gotardo","São Joaquim de Bicas","São José da Barra","São José da Lapa","São José da Safira","São José da Varginha","São José do Alegre","São José do Divino","São José do Goiabal","São José do Jacuri","São José do Mantimento","São João Batista do Glória","São João Evangelista","São João Nepomuceno","São João da Lagoa","São João da Mata","São João da Ponte","São João das Missões","São João del Rei","São João do Manhuaçu","São João do Manteninha","São João do Oriente","São João do Pacuí","São João do Paraíso","São Lourenço","São Miguel do Anta","São Pedro da União","São Pedro do Suaçuí","São Pedro dos Ferros","São Romão","São Roque de Minas","São Sebastião da Bela Vista","São Sebastião da Vargem Alegre","São Sebastião do Anta","São Sebastião do Maranhão","São Sebastião do Oeste","São Sebastião do Paraíso","São Sebastião do Rio Preto","São Sebastião do Rio Verde","São Tiago","São Tomás de Aquino","São Tomé das Letras","São Vicente de Minas","Tabuleiro","Taiobeiras","Taparuba","Tapira","Tapiraí","Taquaraçu de Minas","Tarumirim","Teixeiras","Teófilo Otoni","Timóteo","Tiradentes","Tiros","Tocantins","Tocos do Moji","Toledo","Tombos","Três Corações","Três Marias","Três Pontas","Tumiritinga","Tupaciguara","Turmalina","Turvolândia","Ubaporanga","Ubaí","Uberaba","Uberlândia","Ubá","Umburatiba","Unaí","União de Minas","Uruana de Minas","Urucuia","Urucânia","Vargem Alegre","Vargem Bonita","Vargem Grande do Rio Pardo","Varginha","Varjão de Minas","Varzelândia","Vazante","Verdelândia","Veredinha","Vermelho Novo","Veríssimo","Vespasiano","Vieiras","Virgem da Lapa","Virginópolis","Virgolândia","Virgínia","Visconde do Rio Branco","Viçosa","Volta Grande","Várzea da Palma","Wenceslau Braz","Água Boa","Água Comprida","Águas Formosas","Águas Vermelhas"]
+;
+
+/* ===================================================================
+   CONFIGURAÇÃO
+   =================================================================== */
+
+/* Planilha Google. Deixe "" para trabalhar só offline (CSV no painel). */
+const SHEETS_WEBHOOK_URL = "";
+
+const PIN = "2026";               /* painel da equipe: 5 toques no logo */
+const RESET_SEGUNDOS = 12;        /* tempo da tela de confirmação */
+const INATIVIDADE_SEGUNDOS = 90;  /* volta à abertura se ninguém tocar */
+
+/* Qual totem é este: vem da URL (?totem=1). Sem parâmetro, vira "Totem ?" */
+const qs = new URLSearchParams(location.search);
+const NOME_TOTEM = "Totem " + (qs.get("totem") || "?");
+
+/* ===================================================================
+   ESTADO
+   =================================================================== */
+const KEY = "ammcf_leads_v2";
+const $  = s => document.querySelector(s);
+const $$ = s => Array.from(document.querySelectorAll(s));
+const esc = s => String(s == null ? "" : s).replace(/[&<>"']/g,
+  c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+
+let step = 1;
+let municipio = "";
+const LISTA = MUNICIPIOS.slice().sort((a,b)=>a.localeCompare(b,"pt-BR"));
+
+function load(){ try{ return JSON.parse(localStorage.getItem(KEY) || "[]"); }catch(e){ return []; } }
+function save(list){
+  try{ localStorage.setItem(KEY, JSON.stringify(list)); return true; }
+  catch(e){ alert("Não foi possível gravar neste totem. Chame a equipe."); return false; }
+}
+
+$("#totemtag").textContent = NOME_TOTEM;
+
+/* ===================================================================
+   TELA CHEIA  — o totem abre no navegador; este botão esconde o Chrome
+   =================================================================== */
+const ICON_IN  = "M4 9V4h5v2H6v3H4zm11-5h5v5h-2V6h-3V4zM4 15h2v3h3v2H4v-5zm14 3v-3h2v5h-5v-2h3z";
+const ICON_OUT = "M9 4v5H4V7h3V4h2zm6 0h2v3h3v2h-5V4zM9 20H7v-3H4v-2h5v5zm6 0v-5h5v2h-3v3h-2z";
+
+function emTelaCheia(){ return !!(document.fullscreenElement || document.webkitFullscreenElement); }
+
+function entrarTelaCheia(){
+  const el = document.documentElement;
+  const go = el.requestFullscreen || el.webkitRequestFullscreen;
+  if(go) { try{ const r = go.call(el); if(r && r.catch) r.catch(()=>{}); }catch(e){} }
+}
+function sairTelaCheia(){
+  const go = document.exitFullscreen || document.webkitExitFullscreen;
+  if(go) { try{ const r = go.call(document); if(r && r.catch) r.catch(()=>{}); }catch(e){} }
+}
+function alternarTelaCheia(){ emTelaCheia() ? sairTelaCheia() : entrarTelaCheia(); }
+
+function pintaBotaoFS(){
+  const cheio = emTelaCheia();
+  $("#fsicon").firstElementChild.setAttribute("d", cheio ? ICON_OUT : ICON_IN);
+  $("#fstxt").textContent = cheio ? "Sair" : "Tela cheia";
+  $("#fsbtn").title = cheio ? "Sair da tela cheia (ou tecle Esc)" : "Tela cheia — esconde o navegador";
+}
+$("#fsbtn").addEventListener("click", e => { e.stopPropagation(); alternarTelaCheia(); });
+document.addEventListener("fullscreenchange", pintaBotaoFS);
+document.addEventListener("webkitfullscreenchange", pintaBotaoFS);
+/* F11 e Esc mudam o estado por fora do botão — o ícone acompanha */
+window.addEventListener("resize", pintaBotaoFS);
+pintaBotaoFS();
+
+/* ===================================================================
+   ATRAÇÃO / INATIVIDADE
+   =================================================================== */
+$("#start").addEventListener("click", ()=>{
+  entrarTelaCheia();            /* gesto do usuário: é aqui que o browser deixa */
+  $("#attract").classList.add("hide");
+  resetIdle();
+});
+function showAttract(){ $("#attract").classList.remove("hide"); }
+
+let idle;
+function resetIdle(){
+  clearTimeout(idle);
+  idle = setTimeout(()=>{
+    if($("#done").classList.contains("show")) return;
+    if($("#admin").classList.contains("show")) return;
+    if($("#attract").classList.contains("hide")){ hardReset(); showAttract(); }
+  }, INATIVIDADE_SEGUNDOS * 1000);
+}
+["touchstart","mousedown","keydown"].forEach(ev =>
+  document.addEventListener(ev, resetIdle, {passive:true}));
+
+/* ===================================================================
+   AUTOCOMPLETE DE MUNICÍPIO
+   =================================================================== */
+const munInput = $("#mun"), acList = $("#aclist");
+const norm = s => s.normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase();
+
+munInput.addEventListener("input", ()=>{
+  const bruto = munInput.value.trim();
+  const q = norm(bruto);
+  acList.innerHTML = "";
+  if(q.length < 2){ acList.classList.remove("open"); return; }
+
+  /* quem começa com o termo vem antes de quem só contém */
+  const comeca = [], contem = [];
+  for(const m of LISTA){
+    const n = norm(m);
+    if(n.startsWith(q)) comeca.push(m);
+    else if(n.includes(q)) contem.push(m);
+  }
+  const hits = comeca.concat(contem).slice(0, 40);
+  if(!hits.length){ acList.classList.remove("open"); return; }
+
+  for(const m of hits){
+    const b = document.createElement("button");
+    b.type = "button";
+    const i = norm(m).indexOf(q);
+    b.innerHTML = i < 0 ? esc(m)
+      : esc(m.slice(0,i)) + "<mark>" + esc(m.slice(i, i+q.length)) + "</mark>" + esc(m.slice(i+q.length));
+    b.addEventListener("click", ()=>pickMun(m));
+    acList.appendChild(b);
+  }
+  acList.classList.add("open");
+});
+
+function pickMun(m){
+  municipio = m;
+  acList.classList.remove("open");
+  munInput.closest(".ac").classList.add("hidden");
+  $("#munpickedtxt").textContent = m + " / MG";
+  $("#munpicked").classList.remove("hidden");
+  $("#f-mun").classList.remove("err");
+}
+$("#munclear").addEventListener("click", ()=>{
+  municipio = ""; munInput.value = "";
+  $("#munpicked").classList.add("hidden");
+  munInput.closest(".ac").classList.remove("hidden");
+  acList.classList.remove("open");
+  munInput.focus();
+});
+
+/* ===================================================================
+   CHIPS (radio e checkbox)
+   =================================================================== */
+$$(".chip").forEach(c=>{
+  c.addEventListener("click", ()=>{
+    const inp = c.querySelector("input");
+    setTimeout(()=>{
+      if(inp.type === "radio"){
+        $$('input[name="'+inp.name+'"]').forEach(o =>
+          o.closest(".chip").classList.toggle("on", o.checked));
+      } else {
+        c.classList.toggle("on", inp.checked);
+      }
+      const f = c.closest(".f"); if(f) f.classList.remove("err");
+    }, 0);
+  });
+});
+const consent = $("#consent");
+consent.addEventListener("click", ()=>{
+  setTimeout(()=>{
+    consent.classList.toggle("on", $("#lgpd").checked);
+    $("#f-lgpd").classList.remove("err");
+  }, 0);
+});
+
+/* ===================================================================
+   MÁSCARA DE TELEFONE
+   =================================================================== */
+$("#fone").addEventListener("input", e=>{
+  let v = e.target.value.replace(/\D/g,"").slice(0,11);
+  if(v.length > 6)      v = "(" + v.slice(0,2) + ") " + v.slice(2, v.length>10?7:6) + "-" + v.slice(v.length>10?7:6);
+  else if(v.length > 2) v = "(" + v.slice(0,2) + ") " + v.slice(2);
+  else if(v.length > 0) v = "(" + v;
+  e.target.value = v;
+});
+
+/* ===================================================================
+   NAVEGAÇÃO E VALIDAÇÃO
+   =================================================================== */
+function paint(){
+  $$(".pane").forEach(p => p.classList.toggle("hidden", +p.dataset.step !== step));
+  $("#barfill").style.width = (step/3*100) + "%";
+  $("#stepn").textContent = step + " de 3";
+  $("#back").classList.toggle("hidden", step === 1);
+  $("#next").innerHTML = step < 3 ? "Continuar &nbsp;→" : "Enviar ✓";
+  $("#navhint").textContent = step < 3 ? "Campos com * são obrigatórios" : "Confira antes de enviar";
+}
+
+function marcaErro(id, ok){ $(id).classList.toggle("err", !ok); return ok; }
+const temRadio = name => !!document.querySelector('input[name="'+name+'"]:checked');
+
+function valida(){
+  let ok = true;
+  if(step === 1){
+    ok = marcaErro("#f-mun",   !!municipio)      && ok;
+    ok = marcaErro("#f-orgao", temRadio("orgao")) && ok;
+  }
+  if(step === 2){
+    const nome = $("#nome").value.trim();
+    const fone = $("#fone").value.replace(/\D/g,"");
+    const mail = $("#email").value.trim();
+    ok = marcaErro("#f-nome",  nome.length >= 3 && nome.includes(" ")) && ok;
+    ok = marcaErro("#f-cargo", temRadio("cargo"))                      && ok;
+    ok = marcaErro("#f-fone",  fone.length === 10 || fone.length === 11) && ok;
+    ok = marcaErro("#f-email", /^[^@\s]+@[^@\s]+\.[^@\s]{2,}$/.test(mail)) && ok;
+  }
+  if(step === 3){
+    ok = marcaErro("#f-plat", temRadio("plat")) && ok;
+    ok = marcaErro("#f-vol",  temRadio("vol"))  && ok;
+    ok = marcaErro("#f-lgpd", $("#lgpd").checked) && ok;
+  }
+  if(!ok){
+    const e = document.querySelector(".pane:not(.hidden) .err");
+    if(e) e.scrollIntoView({behavior:"smooth", block:"center"});
+  }
+  return ok;
+}
+
+$("#next").addEventListener("click", ()=>{
+  if(!valida()) return;
+  if(step < 3){ step++; paint(); return; }
+  submit();
+});
+$("#back").addEventListener("click", ()=>{ if(step > 1){ step--; paint(); } });
+
+/* ===================================================================
+   ENVIO
+   =================================================================== */
+const multi = name => $$('input[name="'+name+'"]:checked').map(i=>i.value).join(" | ");
+const one   = name => { const i = document.querySelector('input[name="'+name+'"]:checked'); return i ? i.value : ""; };
+
+function submit(){
+  const rec = {
+    id: NOME_TOTEM.replace(/\s+/g,"") + "-" + Date.now().toString(36) + "-" + Math.random().toString(36).slice(2,7),
+    timestamp: new Date().toISOString(),
+    totem: NOME_TOTEM,
+    municipio: municipio,
+    uf: "MG",
+    orgao: one("orgao"),
+    nome: $("#nome").value.trim(),
+    cargo: one("cargo"),
+    celular: $("#fone").value.trim(),
+    email: $("#email").value.trim().toLowerCase(),
+    plataforma_hoje: one("plat"),
+    processos_mes: one("vol"),
+    interesses: multi("interesse"),
+    proximos_passos: multi("proximo"),
+    lgpd: "Sim",
+    enviado: "nao"
+  };
+
+  const list = load(); list.push(rec); save(list);
+  sincronizar();
+
+  const quer = rec.proximos_passos.includes("termo");
+  $("#donettl").textContent = rec.nome.split(/\s+/)[0] + ", recebemos!";
+  $("#donetxt").textContent = quer
+    ? "A AMM envia o termo de adesão de " + rec.municipio + " para " + rec.email + " nas próximas 48 horas."
+    : "A AMM vai falar com você pelo WhatsApp " + rec.celular + ".";
+  $("#done").classList.add("show");
+  countdown();
+}
+
+let cdTimer;
+function countdown(){
+  let n = RESET_SEGUNDOS;
+  clearInterval(cdTimer);
+  const tick = ()=>{
+    $("#cd").textContent = "Nova ficha em " + n + "s";
+    if(n-- <= 0){ clearInterval(cdTimer); newForm(); }
+  };
+  tick(); cdTimer = setInterval(tick, 1000);
+}
+$("#again").addEventListener("click", ()=>{ clearInterval(cdTimer); newForm(); });
+
+function hardReset(){
+  step = 1; municipio = "";
+  $$("input[type=text],input[type=email],input[type=tel]").forEach(i => i.value = "");
+  $$("input[type=radio],input[type=checkbox]").forEach(i => i.checked = false);
+  $$(".chip").forEach(c => c.classList.remove("on"));
+  consent.classList.remove("on");
+  $$(".f").forEach(f => f.classList.remove("err"));
+  $("#munpicked").classList.add("hidden");
+  munInput.closest(".ac").classList.remove("hidden");
+  acList.classList.remove("open");
+  paint();
+}
+function newForm(){ $("#done").classList.remove("show"); hardReset(); resetIdle(); }
+
+/* ===================================================================
+   SINCRONIZAÇÃO COM A PLANILHA
+   Grava sempre local primeiro. A fila sobe sozinha quando houver rede.
+   =================================================================== */
+let sincronizando = false;
+
+async function sincronizar(){
+  if(!SHEETS_WEBHOOK_URL || sincronizando) return;
+  const list = load();
+  const pend = list.filter(r => r.enviado !== "sim");
+  if(!pend.length){ pintaStatus(); return; }
+
+  sincronizando = true;
+  try{
+    for(const r of pend){
+      const ok = await enviarUm(r);
+      if(!ok) break;             /* rede caiu: o resto continua na fila */
+      r.enviado = "sim";
+      save(list);                /* grava a cada ficha: queda no meio não perde o que já subiu */
+      pintaStatus();
+    }
+  } finally {
+    sincronizando = false;
+    pintaStatus();
+  }
+}
+
+async function enviarUm(r){
+  const ctrl = new AbortController();
+  const t = setTimeout(()=>ctrl.abort(), 15000);
+  try{
+    /* text/plain evita o preflight CORS que o Apps Script não responde */
+    const resp = await fetch(SHEETS_WEBHOOK_URL, {
+      method: "POST",
+      headers: {"Content-Type": "text/plain;charset=utf-8"},
+      body: JSON.stringify(r),
+      redirect: "follow",
+      signal: ctrl.signal
+    });
+    clearTimeout(t);
+    return resp.ok;
+  }catch(e){
+    clearTimeout(t);
+    return false;
+  }
+}
+
+function pintaStatus(){
+  const el = $("#sync");
+  if(!SHEETS_WEBHOOK_URL){ el.textContent = "● local"; el.style.color = "#5B738C"; return; }
+  const p = load().filter(r => r.enviado !== "sim").length;
+  el.textContent = p ? "● " + p + " na fila" : "● enviado";
+  el.style.color = p ? "#A8690C" : "#1E7A3C";
+}
+
+if(SHEETS_WEBHOOK_URL){
+  setInterval(sincronizar, 20000);
+  window.addEventListener("online", sincronizar);
+}
+
+/* ===================================================================
+   PAINEL DA EQUIPE — 5 toques no logo
+   =================================================================== */
+let taps = 0, tapT;
+$("#mark").addEventListener("click", ()=>{
+  taps++; clearTimeout(tapT); tapT = setTimeout(()=>taps = 0, 1600);
+  if(taps >= 5){
+    taps = 0;
+    $("#admin").classList.add("show");
+    $("#pin").value = ""; $("#pin").placeholder = "····";
+    $("#pin").focus();
+  }
+});
+$("#pincancel").addEventListener("click", fecharPainel);
+$("#close").addEventListener("click", fecharPainel);
+function fecharPainel(){
+  $("#admin").classList.remove("show");
+  $("#panel").classList.add("hidden");
+  $("#pinview").classList.remove("hidden");
+}
+$("#pinok").addEventListener("click", abrirPainel);
+$("#pin").addEventListener("keydown", e => { if(e.key === "Enter") abrirPainel(); });
+
+function abrirPainel(){
+  if($("#pin").value !== PIN){ $("#pin").value = ""; $("#pin").placeholder = "PIN incorreto"; return; }
+  $("#pinview").classList.add("hidden");
+  $("#panel").classList.remove("hidden");
+  pintaPainel();
+}
+function pintaPainel(){
+  const list = load();
+  const ok = list.filter(r => r.enviado === "sim").length;
+  $("#count").textContent   = list.length;
+  $("#k-totem").textContent = NOME_TOTEM;
+  $("#k-ok").textContent    = SHEETS_WEBHOOK_URL ? ok : "—";
+  $("#k-fila").textContent  = SHEETS_WEBHOOK_URL ? (list.length - ok) : "—";
+  const u = list[list.length - 1];
+  $("#k-ult").textContent = u
+    ? new Date(u.timestamp).toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"}) + " · " + u.municipio
+    : "—";
+}
+
+/* ---- CSV: ; e BOM, para o Excel em português abrir sem embaralhar ---- */
+const COLS = ["data","hora","totem","municipio","uf","orgao","nome","cargo","celular",
+              "email","plataforma_hoje","processos_mes","interesses","proximos_passos","lgpd"];
+
+function montaCSV(){
+  const cel = v => '"' + String(v == null ? "" : v).replace(/"/g,'""') + '"';
+  const linhas = [COLS.join(";")];
+  for(const r of load()){
+    const d = new Date(r.timestamp);
+    linhas.push([
+      d.toLocaleDateString("pt-BR"), d.toLocaleTimeString("pt-BR"),
+      r.totem, r.municipio, r.uf, r.orgao, r.nome, r.cargo, r.celular, r.email,
+      r.plataforma_hoje, r.processos_mes, r.interesses, r.proximos_passos, r.lgpd
+    ].map(cel).join(";"));
+  }
+  return linhas.join("\r\n");
+}
+
+$("#csv").addEventListener("click", ()=>{
+  const nome = "adesoes-" + NOME_TOTEM.replace(/\s+/g,"").toLowerCase()
+             + "-" + new Date().toISOString().slice(0,10) + ".csv";
+  const blob = new Blob(["﻿" + montaCSV()], {type:"text/csv;charset=utf-8"});
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob); a.download = nome;
+  document.body.appendChild(a); a.click();
+  setTimeout(()=>{ URL.revokeObjectURL(a.href); a.remove(); }, 1000);
+});
+
+$("#copy").addEventListener("click", async ()=>{
+  const txt = montaCSV();
+  try{ await navigator.clipboard.writeText(txt); $("#copy").textContent = "Copiado ✓"; }
+  catch(e){
+    const ta = document.createElement("textarea");
+    ta.value = txt; document.body.appendChild(ta); ta.select();
+    try{ document.execCommand("copy"); $("#copy").textContent = "Copiado ✓"; }
+    catch(e2){ $("#copy").textContent = "Não deu — baixe o CSV"; }
+    ta.remove();
+  }
+  setTimeout(()=>$("#copy").textContent = "Copiar tudo", 2500);
+});
+
+$("#resync").addEventListener("click", async ()=>{
+  if(!SHEETS_WEBHOOK_URL){ $("#resync").textContent = "Sem planilha ligada"; 
+    setTimeout(()=>$("#resync").textContent = "Enviar agora", 2500); return; }
+  $("#resync").textContent = "Enviando…";
+  await sincronizar();
+  pintaPainel();
+  $("#resync").textContent = "Enviar agora";
+});
+
+$("#wipe").addEventListener("click", ()=>{
+  const list = load();
+  const fila = list.filter(r => r.enviado !== "sim").length;
+  const aviso = fila
+    ? "ATENÇÃO: " + fila + " ficha(s) ainda NÃO subiram para a planilha.\n\nApagar mesmo assim?"
+    : "Apagar as " + list.length + " fichas deste totem?\n\nBaixe o CSV antes.";
+  if(!confirm(aviso)) return;
+  if(!confirm("Tem certeza? Isso não tem volta.")) return;
+  save([]); pintaPainel();
+});
+
+/* ===================================================================
+   INÍCIO
+   =================================================================== */
+paint();
+pintaStatus();
+sincronizar();
+resetIdle();
+
+/* no totem, avisa se alguém fechar com fichas ainda na fila */
+window.addEventListener("beforeunload", e=>{
+  if(load().some(r => r.enviado !== "sim")){ e.preventDefault(); e.returnValue = ""; }
+});
+</script>
+</body>
+</html>
