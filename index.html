@@ -393,8 +393,6 @@ label.consent{
           </div>
           <div class="errmsg">Selecione uma opção.</div>
         </div>
-      </div>
-      <div class="col">
         <div class="f">
           <span class="lab">O que mais interessa agora?</span>
           <div class="hint">Pode marcar mais de um.</div>
@@ -404,15 +402,30 @@ label.consent{
             <label class="chip"><input type="checkbox" name="interesse" value="Dispensa eletrônica">Dispensa eletrônica</label>
             <label class="chip"><input type="checkbox" name="interesse" value="Marketplace">Marketplace</label>
             <label class="chip"><input type="checkbox" name="interesse" value="Credenciamento">Credenciamento</label>
-            <label class="chip"><input type="checkbox" name="interesse" value="Treinamento da equipe">Treinamento da equipe</label>
+            <label class="chip"><input type="checkbox" name="interesse" value="Gestão de contratos">Gestão de contratos</label>
           </div>
         </div>
-        <div class="f">
-          <span class="lab">Próximos passos</span>
+      </div>
+      <div class="col">
+        <div class="f" id="f-proximo">
+          <span class="lab">Vamos agendar? <span class="req">*</span></span>
+          <div class="hint">A AMM marca com você. Pode marcar mais de um.</div>
           <div class="chips" data-multi="proximo">
-            <label class="chip"><input type="checkbox" name="proximo" value="Receber o termo de adesão">Quero receber o termo de adesão</label>
-            <label class="chip"><input type="checkbox" name="proximo" value="Agendar treinamento">Quero agendar treinamento</label>
+            <label class="chip"><input type="checkbox" name="proximo" value="Apresentação da plataforma">Conhecer melhor a plataforma</label>
+            <label class="chip"><input type="checkbox" name="proximo" value="Treinamento da equipe">Treinamento da equipe</label>
+            <label class="chip"><input type="checkbox" name="proximo" value="Receber o termo de adesão">Receber o termo de adesão</label>
           </div>
+          <div class="errmsg">Escolha ao menos uma opção.</div>
+        </div>
+        <div class="f" id="f-quando">
+          <span class="lab">Quando é melhor falar com você? <span class="req">*</span></span>
+          <div class="chips" data-single="quando">
+            <label class="chip"><input type="radio" name="quando" value="Esta semana">Esta semana</label>
+            <label class="chip"><input type="radio" name="quando" value="Próxima semana">Próxima semana</label>
+            <label class="chip"><input type="radio" name="quando" value="Depois do evento">Depois do evento</label>
+            <label class="chip"><input type="radio" name="quando" value="Qualquer momento">Qualquer momento</label>
+          </div>
+          <div class="errmsg">Selecione uma opção.</div>
         </div>
         <div class="f" id="f-lgpd">
           <label class="consent" id="consent">
@@ -690,9 +703,12 @@ function valida(){
     ok = marcaErro("#f-email", /^[^@\s]+@[^@\s]+\.[^@\s]{2,}$/.test(mail)) && ok;
   }
   if(step === 3){
-    ok = marcaErro("#f-plat", temRadio("plat")) && ok;
-    ok = marcaErro("#f-vol",  temRadio("vol"))  && ok;
-    ok = marcaErro("#f-lgpd", $("#lgpd").checked) && ok;
+    const agendou = $$('input[name="proximo"]:checked').length > 0;
+    ok = marcaErro("#f-plat",    temRadio("plat"))   && ok;
+    ok = marcaErro("#f-vol",     temRadio("vol"))    && ok;
+    ok = marcaErro("#f-proximo", agendou)            && ok;
+    ok = marcaErro("#f-quando",  temRadio("quando")) && ok;
+    ok = marcaErro("#f-lgpd",    $("#lgpd").checked) && ok;
   }
   if(!ok){
     const e = document.querySelector(".pane:not(.hidden) .err");
@@ -730,6 +746,7 @@ function submit(){
     processos_mes: one("vol"),
     interesses: multi("interesse"),
     proximos_passos: multi("proximo"),
+    melhor_momento: one("quando"),
     lgpd: "Sim",
     enviado: "nao"
   };
@@ -737,13 +754,31 @@ function submit(){
   const list = load(); list.push(rec); save(list);
   sincronizar();
 
-  const quer = rec.proximos_passos.includes("termo");
-  $("#donettl").textContent = rec.nome.split(/\s+/)[0] + ", recebemos!";
-  $("#donetxt").textContent = quer
-    ? "A AMM envia o termo de adesão de " + rec.municipio + " para " + rec.email + " nas próximas 48 horas."
-    : "A AMM vai falar com você pelo WhatsApp " + rec.celular + ".";
+  $("#donettl").textContent = rec.nome.split(/\s+/)[0] + ", vamos marcar!";
+  $("#donetxt").textContent = textoConfirmacao(rec);
   $("#done").classList.add("show");
   countdown();
+}
+
+/* O fecho do totem e o agendamento: a confirmacao repete QUANDO a AMM
+   vai falar e POR ONDE, para a pessoa sair do stand com isso combinado. */
+function textoConfirmacao(rec){
+  const p = rec.proximos_passos;
+  const quando = {
+    "Esta semana":    "ainda esta semana",
+    "Próxima semana": "na próxima semana",
+    "Depois do evento": "logo depois do evento",
+    "Qualquer momento": "nos próximos dias"
+  }[rec.melhor_momento] || "nos próximos dias";
+
+  let o;
+  if(p.includes("Apresentação")) o = "apresentar o Compra Fácil para " + rec.municipio;
+  else if(p.includes("Treinamento")) o = "agendar o treinamento da sua equipe";
+  else o = "enviar o termo de adesão de " + rec.municipio;
+
+  let t = "A AMM fala com você " + quando + " pelo WhatsApp " + rec.celular + " para " + o + ".";
+  if(p.includes("termo")) t += " O termo de adesão vai para " + rec.email + ".";
+  return t;
 }
 
 let cdTimer;
@@ -876,7 +911,8 @@ function pintaPainel(){
 
 /* ---- CSV: ; e BOM, para o Excel em português abrir sem embaralhar ---- */
 const COLS = ["data","hora","totem","municipio","uf","orgao","nome","cargo","celular",
-              "email","plataforma_hoje","processos_mes","interesses","proximos_passos","lgpd"];
+              "email","plataforma_hoje","processos_mes","interesses","proximos_passos",
+              "melhor_momento","lgpd"];
 
 function montaCSV(){
   const cel = v => '"' + String(v == null ? "" : v).replace(/"/g,'""') + '"';
@@ -886,7 +922,8 @@ function montaCSV(){
     linhas.push([
       d.toLocaleDateString("pt-BR"), d.toLocaleTimeString("pt-BR"),
       r.totem, r.municipio, r.uf, r.orgao, r.nome, r.cargo, r.celular, r.email,
-      r.plataforma_hoje, r.processos_mes, r.interesses, r.proximos_passos, r.lgpd
+      r.plataforma_hoje, r.processos_mes, r.interesses, r.proximos_passos,
+      r.melhor_momento, r.lgpd
     ].map(cel).join(";"));
   }
   return linhas.join("\r\n");

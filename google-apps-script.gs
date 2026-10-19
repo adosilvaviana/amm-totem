@@ -18,8 +18,10 @@ const SHEET_NAME = 'Adesões';
 const COLUNAS = [
   'ID', 'Data', 'Hora', 'Totem', 'Município', 'UF', 'Tipo de órgão',
   'Nome', 'Cargo', 'Celular', 'E-mail',
-  'Plataforma hoje', 'Processos/mês', 'Interesses', 'Próximos passos',
-  'LGPD', 'Quer o termo', 'Quer treinamento', 'Recebido em'
+  'Plataforma hoje', 'Processos/mês', 'Interesses',
+  'Agendar', 'Melhor momento',
+  'Quer apresentação', 'Quer treinamento', 'Quer o termo',
+  'LGPD', 'Recebido em'
 ];
 
 function doPost(e) {
@@ -71,9 +73,12 @@ function montarLinha(d) {
     d.processos_mes || '',
     d.interesses || '',
     prox,
+    d.melhor_momento || '',
+    // colunas de trabalho: da pra filtrar a agenda da semana sem ler o texto
+    prox.indexOf('Apresenta') >= 0  ? 'Sim' : '',
+    prox.indexOf('Treinamento') >= 0 ? 'Sim' : '',
+    prox.indexOf('termo') >= 0      ? 'Sim' : '',
     d.lgpd || '',
-    prox.indexOf('termo') >= 0 ? 'Sim' : '',          // coluna de trabalho do Rodrigo
-    prox.indexOf('treinamento') >= 0 ? 'Sim' : '',    // coluna de trabalho da Nathiely
     Utilities.formatDate(new Date(), tz, 'dd/MM/yyyy HH:mm:ss')
   ];
 }
@@ -108,7 +113,8 @@ function abaAdesoes() {
     sheet.setColumnWidth(8, 220);   // Nome
     sheet.setColumnWidth(11, 240);  // E-mail
     sheet.setColumnWidth(14, 300);  // Interesses
-    sheet.setColumnWidth(15, 260);  // Próximos passos
+    sheet.setColumnWidth(15, 260);  // Agendar
+    sheet.setColumnWidth(16, 150);  // Melhor momento
   }
   return sheet;
 }
