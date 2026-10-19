@@ -146,8 +146,21 @@ Quer o termo** e **Melhor momento** — dá para filtrar a agenda da semana sem 
 
 ## Pendências
 
-- [ ] Criar a planilha e colar a URL em `SHEETS_WEBHOOK_URL` — **bloqueador**
-- [ ] Publicar no GitHub Pages (repo `amm-totem`) — **bloqueador**
+- [x] Publicado no GitHub Pages — `https://adosilvaviana.github.io/amm-totem/?totem=1|2|3`
+- [x] Planilha ligada e testada de ponta a ponta em 19/10/2026 — ficha pelo endereço
+      do Totem 1 chegou na aba `Adesões` com as 21 colunas certas, e o reenvio do mesmo
+      `id` devolveu `atualizado:true` (atualiza a linha, não duplica)
+- [ ] **Apagar as linhas de teste** da planilha (`DIAG-001` e as que começam com `TESTE `)
 - [ ] Testar nos 3 totens reais: touch, teclado na tela, brilho, tela cheia
 - [ ] Confirmar que o wi-fi do evento não bloqueia `script.google.com`
-- [ ] Apagar as linhas de teste da planilha antes de abrir ao público
+
+### Planilha
+
+**Leads AMM Compra Fácil — Totens**, na conta `moboxoficial@gmail.com`:
+`https://docs.google.com/spreadsheets/d/10M96ZpjCDG_z5s8cfTJJlDW8gpdF1DNyhWaSICzZMW4/edit`
+
+**Extensões → Apps Script abre na conta PADRÃO do navegador**, não na dona do arquivo.
+Com mais de uma conta logada ele procura a planilha na conta errada e devolve
+"Não foi possível abrir o arquivo" / "Página não encontrada" — não é a planilha que
+está quebrada. Abrir numa janela anônima logada só na conta dona resolve. Mordeu em
+19/10/2026, no Comet.
