@@ -128,6 +128,13 @@ Decisão do Ado em 19/10/2026: o passo 3 não termina pedindo um documento, term
 **obrigatórios**, e a confirmação devolve o combinado por extenso
 (`textoConfirmacao()`): quando, por qual canal e para quê.
 
+**O passo 3 só tem o agendamento** (pedido da AMM em 19/10/2026, aplicado em 20/10): saíram
+"usa plataforma de licitação?" (a AMM já sabe quem usa o AMM-Licita), "quantos processos
+por mês" e "o que mais interessa" — prefeito não sabe responder isso. As colunas
+`plataforma_hoje`, `processos_mes` e `interesses` continuam na planilha e no CSV, vazias
+nas fichas novas, para as linhas antigas não desalinharem. Não precisa reimplantar o
+Apps Script por causa disso: ele grava `''` no que não vier.
+
 Na planilha isso vira as colunas de trabalho **Quer apresentação / Quer treinamento /
 Quer o termo** e **Melhor momento** — dá para filtrar a agenda da semana sem ler texto.
 

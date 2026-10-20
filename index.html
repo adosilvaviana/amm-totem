@@ -369,42 +369,8 @@ label.consent{
     <!-- PASSO 3 -->
     <section class="pane hidden" data-step="3">
       <div class="headline">
-        <h2 class="stepttl">Como o município compra hoje</h2>
-        <p class="stepsub">Três perguntas rápidas e a gente marca a conversa.</p>
-      </div>
-      <div class="col">
-        <div class="f" id="f-plat">
-          <span class="lab">O município usa plataforma de licitação eletrônica? <span class="req">*</span></span>
-          <div class="chips" data-single="plat">
-            <label class="chip"><input type="radio" name="plat" value="Sim, o AMM-Licita">Sim, o AMM-Licita</label>
-            <label class="chip"><input type="radio" name="plat" value="Sim, outra">Sim, outra</label>
-            <label class="chip"><input type="radio" name="plat" value="Não">Não</label>
-          </div>
-          <div class="errmsg">Selecione uma opção.</div>
-        </div>
-        <div class="f" id="f-vol">
-          <span class="lab">Quantos processos por mês, em média? <span class="req">*</span></span>
-          <div class="chips" data-single="vol">
-            <label class="chip"><input type="radio" name="vol" value="Até 5">Até 5</label>
-            <label class="chip"><input type="radio" name="vol" value="6 a 15">6 a 15</label>
-            <label class="chip"><input type="radio" name="vol" value="16 a 30">16 a 30</label>
-            <label class="chip"><input type="radio" name="vol" value="Mais de 30">Mais de 30</label>
-            <label class="chip"><input type="radio" name="vol" value="Não sei">Não sei</label>
-          </div>
-          <div class="errmsg">Selecione uma opção.</div>
-        </div>
-        <div class="f">
-          <span class="lab">O que mais interessa agora?</span>
-          <div class="hint">Pode marcar mais de um.</div>
-          <div class="chips" data-multi="interesse">
-            <label class="chip"><input type="checkbox" name="interesse" value="Fase interna (ETP e TR)">Fase interna (ETP e TR)</label>
-            <label class="chip"><input type="checkbox" name="interesse" value="Pregão eletrônico">Pregão eletrônico</label>
-            <label class="chip"><input type="checkbox" name="interesse" value="Dispensa eletrônica">Dispensa eletrônica</label>
-            <label class="chip"><input type="checkbox" name="interesse" value="Marketplace">Marketplace</label>
-            <label class="chip"><input type="checkbox" name="interesse" value="Credenciamento">Credenciamento</label>
-            <label class="chip"><input type="checkbox" name="interesse" value="Gestão de contratos">Gestão de contratos</label>
-          </div>
-        </div>
+        <h2 class="stepttl">Vamos marcar a conversa</h2>
+        <p class="stepsub">Duas perguntas rápidas e a AMM fala com você.</p>
       </div>
       <div class="col">
         <div class="f" id="f-proximo">
@@ -427,6 +393,8 @@ label.consent{
           </div>
           <div class="errmsg">Selecione uma opção.</div>
         </div>
+      </div>
+      <div class="col">
         <div class="f" id="f-lgpd">
           <label class="consent" id="consent">
             <span class="box">✓</span>
@@ -704,8 +672,6 @@ function valida(){
   }
   if(step === 3){
     const agendou = $$('input[name="proximo"]:checked').length > 0;
-    ok = marcaErro("#f-plat",    temRadio("plat"))   && ok;
-    ok = marcaErro("#f-vol",     temRadio("vol"))    && ok;
     ok = marcaErro("#f-proximo", agendou)            && ok;
     ok = marcaErro("#f-quando",  temRadio("quando")) && ok;
     ok = marcaErro("#f-lgpd",    $("#lgpd").checked) && ok;
@@ -742,9 +708,6 @@ function submit(){
     cargo: one("cargo"),
     celular: $("#fone").value.trim(),
     email: $("#email").value.trim().toLowerCase(),
-    plataforma_hoje: one("plat"),
-    processos_mes: one("vol"),
-    interesses: multi("interesse"),
     proximos_passos: multi("proximo"),
     melhor_momento: one("quando"),
     lgpd: "Sim",
