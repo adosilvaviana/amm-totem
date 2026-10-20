@@ -128,7 +128,10 @@ e-mail com `teste`: filtrar e apagar essas linhas antes de entregar para a AMM.
 
 ### Painel
 
-5 toques no logo + PIN `2026`. Mostra captadas / enviadas / na fila, exporta CSV (`;` e
+5 toques no logo + PIN `2026`. **"Apagar tudo deste totem" pede o PIN de novo**, digitado numa caixa
+dentro do painel, que avisa quantas fichas ainda não subiram. Antes eram dois `confirm()`
+do navegador, e num totem de toque dois toques no mesmo lugar passavam pelos dois. Não
+voltar para `confirm()`. Mostra captadas / enviadas / na fila, exporta CSV (`;` e
 BOM, abre no Excel em português sem embaralhar acento) e copia tudo para a área de
 transferência.
 

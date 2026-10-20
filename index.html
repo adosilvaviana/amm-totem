@@ -236,6 +236,9 @@ label.consent{
 }
 .card button.p{background:var(--navy-700);color:#fff;border-color:var(--navy-700)}
 .card button.d{background:#fff;color:var(--red);border-color:#F3C9CC}
+.card button.dd{background:var(--red);color:#fff;border-color:var(--red)}
+.wipebox{margin-top:1.6vh;padding:2vh;border:2px solid #F3C9CC;border-radius:var(--r);background:#FFF6F6}
+.wipebox .s{margin:0 0 1.4vh;color:var(--red);font-weight:700}
 .kv{
   display:flex;justify-content:space-between;gap:1.4vh;font-size:1.8vh;
   padding:1.2vh 0;border-bottom:1px solid var(--gray-100)
@@ -452,6 +455,14 @@ label.consent{
       </div>
       <div class="row">
         <button class="d" id="wipe">Apagar tudo deste totem</button>
+      </div>
+      <div class="wipebox hidden" id="wipebox">
+        <p class="s" id="wipeaviso"></p>
+        <input type="tel" id="wipepin" inputmode="numeric" maxlength="4" placeholder="PIN">
+        <div class="row">
+          <button class="dd" id="wipeok">Apagar de vez</button>
+          <button id="wipecancel">Cancelar</button>
+        </div>
       </div>
       <p class="s" style="margin:2.4vh 0 0">As fichas ficam gravadas neste navegador. Baixe o CSV antes de apagar.</p>
     </div>
@@ -871,6 +882,7 @@ function preencherTeste(){
 $("#pincancel").addEventListener("click", fecharPainel);
 $("#close").addEventListener("click", fecharPainel);
 function fecharPainel(){
+  fechaWipe();
   $("#admin").classList.remove("show");
   $("#panel").classList.add("hidden");
   $("#pinview").classList.remove("hidden");
@@ -949,15 +961,28 @@ $("#resync").addEventListener("click", async ()=>{
   $("#resync").textContent = "Enviar agora";
 });
 
+/* Apagar tudo pede o PIN de novo, digitado dentro do painel. Antes eram dois
+   confirm() do navegador: num totem de toque, dois toques no mesmo lugar
+   passavam pelos dois sem ninguem ler. */
+function fechaWipe(){
+  $("#wipebox").classList.add("hidden");
+  $("#wipe").classList.remove("hidden");
+  $("#wipepin").value = ""; $("#wipepin").placeholder = "PIN";
+}
 $("#wipe").addEventListener("click", ()=>{
   const list = load();
   const fila = list.filter(r => r.enviado !== "sim").length;
-  const aviso = fila
-    ? "ATENÇÃO: " + fila + " ficha(s) ainda NÃO subiram para a planilha.\n\nApagar mesmo assim?"
-    : "Apagar as " + list.length + " fichas deste totem?\n\nBaixe o CSV antes.";
-  if(!confirm(aviso)) return;
-  if(!confirm("Tem certeza? Isso não tem volta.")) return;
-  save([]); pintaPainel();
+  $("#wipeaviso").textContent = fila
+    ? "ATENÇÃO: " + fila + " ficha(s) ainda NÃO subiram para a planilha e vão se perder. Digite o PIN para apagar as " + list.length + " fichas deste totem."
+    : "Isso apaga as " + list.length + " fichas gravadas neste totem e não tem volta. Digite o PIN para confirmar.";
+  $("#wipe").classList.add("hidden");
+  $("#wipebox").classList.remove("hidden");
+  $("#wipepin").focus();
+});
+$("#wipecancel").addEventListener("click", fechaWipe);
+$("#wipeok").addEventListener("click", ()=>{
+  if($("#wipepin").value !== PIN){ $("#wipepin").value = ""; $("#wipepin").placeholder = "PIN incorreto"; return; }
+  save([]); fechaWipe(); pintaPainel();
 });
 
 /* ===================================================================
