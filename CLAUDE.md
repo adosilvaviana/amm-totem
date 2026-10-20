@@ -124,9 +124,15 @@ transferência.
 ## O fecho é o agendamento
 
 Decisão do Ado em 19/10/2026: o passo 3 não termina pedindo um documento, termina
-**marcando uma conversa**. `Vamos agendar?` e `Quando é melhor falar com você?` são
-**obrigatórios**, e a confirmação devolve o combinado por extenso
-(`textoConfirmacao()`): quando, por qual canal e para quê.
+**marcando uma conversa**. `Como você prefere conhecer a plataforma?` e `Quando é melhor
+falar com você?` são **obrigatórios** e de escolha única, e a confirmação devolve o
+combinado por extenso (`textoConfirmacao()`): quando, por qual canal e para quê.
+
+**Não pedir termo nem treinamento no totem** (Ado, 20/10/2026): quem passa no stand
+ainda não conhece a plataforma. As opções antigas ("Treinamento da equipe", "Receber o
+termo de adesão") viraram o formato de conhecer: Apresentação online / Ligação rápida /
+Material pelo WhatsApp. O "quando" é Esta semana / Semana que vem / Mês que vem /
+Qualquer momento.
 
 **O passo 3 só tem o agendamento** (pedido da AMM em 19/10/2026, aplicado em 20/10): saíram
 "usa plataforma de licitação?" (a AMM já sabe quem usa o AMM-Licita), "quantos processos
@@ -135,8 +141,10 @@ por mês" e "o que mais interessa" — prefeito não sabe responder isso. As col
 nas fichas novas, para as linhas antigas não desalinharem. Não precisa reimplantar o
 Apps Script por causa disso: ele grava `''` no que não vier.
 
-Na planilha isso vira as colunas de trabalho **Quer apresentação / Quer treinamento /
-Quer o termo** e **Melhor momento** — dá para filtrar a agenda da semana sem ler texto.
+Na planilha o formato escolhido cai em `proximos_passos`. As colunas derivadas **Quer
+apresentação / Quer treinamento / Quer o termo** são do formato antigo: só "Quer
+apresentação" ainda acende (quando a escolha é "Apresentação online"). Filtrar pela
+coluna `proximos_passos` e por **Melhor momento** dá a agenda da semana sem ler texto.
 
 ---
 

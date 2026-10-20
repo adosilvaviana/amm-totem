@@ -329,7 +329,7 @@ label.consent{
     <section class="pane hidden" data-step="2">
       <div class="headline">
         <h2 class="stepttl">Seus dados de contato</h2>
-        <p class="stepsub">É por aqui que a AMM envia o termo de adesão.</p>
+        <p class="stepsub">É por aqui que a AMM fala com você.</p>
       </div>
       <div class="col">
         <div class="f" id="f-nome">
@@ -374,21 +374,20 @@ label.consent{
       </div>
       <div class="col">
         <div class="f" id="f-proximo">
-          <span class="lab">Vamos agendar? <span class="req">*</span></span>
-          <div class="hint">A AMM marca com você. Pode marcar mais de um.</div>
-          <div class="chips" data-multi="proximo">
-            <label class="chip"><input type="checkbox" name="proximo" value="Apresentação da plataforma">Conhecer melhor a plataforma</label>
-            <label class="chip"><input type="checkbox" name="proximo" value="Treinamento da equipe">Treinamento da equipe</label>
-            <label class="chip"><input type="checkbox" name="proximo" value="Receber o termo de adesão">Receber o termo de adesão</label>
+          <span class="lab">Como você prefere conhecer a plataforma? <span class="req">*</span></span>
+          <div class="chips" data-single="proximo">
+            <label class="chip"><input type="radio" name="proximo" value="Apresentação online">Apresentação online</label>
+            <label class="chip"><input type="radio" name="proximo" value="Ligação rápida">Uma ligação rápida</label>
+            <label class="chip"><input type="radio" name="proximo" value="Material pelo WhatsApp">Material pelo WhatsApp</label>
           </div>
-          <div class="errmsg">Escolha ao menos uma opção.</div>
+          <div class="errmsg">Selecione uma opção.</div>
         </div>
         <div class="f" id="f-quando">
           <span class="lab">Quando é melhor falar com você? <span class="req">*</span></span>
           <div class="chips" data-single="quando">
             <label class="chip"><input type="radio" name="quando" value="Esta semana">Esta semana</label>
-            <label class="chip"><input type="radio" name="quando" value="Próxima semana">Próxima semana</label>
-            <label class="chip"><input type="radio" name="quando" value="Depois do evento">Depois do evento</label>
+            <label class="chip"><input type="radio" name="quando" value="Semana que vem">Semana que vem</label>
+            <label class="chip"><input type="radio" name="quando" value="Mês que vem">Mês que vem</label>
             <label class="chip"><input type="radio" name="quando" value="Qualquer momento">Qualquer momento</label>
           </div>
           <div class="errmsg">Selecione uma opção.</div>
@@ -671,8 +670,7 @@ function valida(){
     ok = marcaErro("#f-email", /^[^@\s]+@[^@\s]+\.[^@\s]{2,}$/.test(mail)) && ok;
   }
   if(step === 3){
-    const agendou = $$('input[name="proximo"]:checked').length > 0;
-    ok = marcaErro("#f-proximo", agendou)            && ok;
+    ok = marcaErro("#f-proximo", temRadio("proximo")) && ok;
     ok = marcaErro("#f-quando",  temRadio("quando")) && ok;
     ok = marcaErro("#f-lgpd",    $("#lgpd").checked) && ok;
   }
@@ -693,7 +691,6 @@ $("#back").addEventListener("click", ()=>{ if(step > 1){ step--; paint(); } });
 /* ===================================================================
    ENVIO
    =================================================================== */
-const multi = name => $$('input[name="'+name+'"]:checked').map(i=>i.value).join(" | ");
 const one   = name => { const i = document.querySelector('input[name="'+name+'"]:checked'); return i ? i.value : ""; };
 
 function submit(){
@@ -708,7 +705,7 @@ function submit(){
     cargo: one("cargo"),
     celular: $("#fone").value.trim(),
     email: $("#email").value.trim().toLowerCase(),
-    proximos_passos: multi("proximo"),
+    proximos_passos: one("proximo"),
     melhor_momento: one("quando"),
     lgpd: "Sim",
     enviado: "nao"
@@ -729,19 +726,17 @@ function textoConfirmacao(rec){
   const p = rec.proximos_passos;
   const quando = {
     "Esta semana":    "ainda esta semana",
-    "Próxima semana": "na próxima semana",
-    "Depois do evento": "logo depois do evento",
+    "Semana que vem": "na semana que vem",
+    "Mês que vem":    "no mês que vem",
     "Qualquer momento": "nos próximos dias"
   }[rec.melhor_momento] || "nos próximos dias";
 
-  let o;
-  if(p.includes("Apresentação")) o = "apresentar o Compra Fácil para " + rec.municipio;
-  else if(p.includes("Treinamento")) o = "agendar o treinamento da sua equipe";
-  else o = "enviar o termo de adesão de " + rec.municipio;
-
-  let t = "A AMM fala com você " + quando + " pelo WhatsApp " + rec.celular + " para " + o + ".";
-  if(p.includes("termo")) t += " O termo de adesão vai para " + rec.email + ".";
-  return t;
+  if(p.includes("Material"))
+    return "A AMM envia o material do Compra Fácil " + quando + " pelo WhatsApp " + rec.celular + ".";
+  if(p.includes("Ligação"))
+    return "A AMM liga para você " + quando + " no " + rec.celular + " para apresentar o Compra Fácil para " + rec.municipio + ".";
+  return "A AMM fala com você " + quando + " pelo WhatsApp " + rec.celular
+       + " para marcar a apresentação online do Compra Fácil para " + rec.municipio + ".";
 }
 
 let cdTimer;
