@@ -146,6 +146,15 @@ apresentação / Quer treinamento / Quer o termo** são do formato antigo: só "
 apresentação" ainda acende (quando a escolha é "Apresentação online"). Filtrar pela
 coluna `proximos_passos` e por **Melhor momento** dá a agenda da semana sem ler texto.
 
+**Na planilha (20/10/2026):** a coluna O foi renomeada de "Agendar" para **"Como quer
+conhecer"**, e L, M, N (Plataforma hoje, Processos/mês, Interesses) e R, S (Quer
+treinamento, Quer o termo) foram **ocultadas, não apagadas**. Ocultar foi escolha de
+propósito no dia do evento: o Apps Script grava por posição (21 colunas), então apagar
+coluna exige mudar `COLUNAS`/`montarLinha` e reimplantar no mesmo minuto, senão a ficha
+que chegar no intervalo cai deslocada. O `.gs` do repositório já usa o nome novo da O,
+mas o publicado não precisa ser reimplantado por isso: ele só escreve o cabeçalho numa
+aba vazia.
+
 ---
 
 ## O que NÃO fazer

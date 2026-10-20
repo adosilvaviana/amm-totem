@@ -19,7 +19,7 @@ const COLUNAS = [
   'ID', 'Data', 'Hora', 'Totem', 'Município', 'UF', 'Tipo de órgão',
   'Nome', 'Cargo', 'Celular', 'E-mail',
   'Plataforma hoje', 'Processos/mês', 'Interesses',
-  'Agendar', 'Melhor momento',
+  'Como quer conhecer', 'Melhor momento',
   'Quer apresentação', 'Quer treinamento', 'Quer o termo',
   'LGPD', 'Recebido em'
 ];
@@ -113,7 +113,7 @@ function abaAdesoes() {
     sheet.setColumnWidth(8, 220);   // Nome
     sheet.setColumnWidth(11, 240);  // E-mail
     sheet.setColumnWidth(14, 300);  // Interesses
-    sheet.setColumnWidth(15, 260);  // Agendar
+    sheet.setColumnWidth(15, 260);  // Como quer conhecer
     sheet.setColumnWidth(16, 150);  // Melhor momento
   }
   return sheet;
