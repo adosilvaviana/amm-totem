@@ -826,18 +826,48 @@ if(SHEETS_WEBHOOK_URL){
 }
 
 /* ===================================================================
-   PAINEL DA EQUIPE — 5 toques no logo
+   LOGO: 2 toques = atalho de teste · 5 toques = painel da equipe
+   O atalho espera a sequencia de toques acabar (700 ms sem toque) para
+   nao disparar no meio dos 5 do painel.
    =================================================================== */
 let taps = 0, tapT;
 $("#mark").addEventListener("click", ()=>{
-  taps++; clearTimeout(tapT); tapT = setTimeout(()=>taps = 0, 1600);
+  taps++; clearTimeout(tapT);
+  tapT = setTimeout(()=>{ if(taps === 2) preencherTeste(); taps = 0; }, 700);
   if(taps >= 5){
+    clearTimeout(tapT);
     taps = 0;
     $("#admin").classList.add("show");
     $("#pin").value = ""; $("#pin").placeholder = "····";
     $("#pin").focus();
   }
 });
+/* Atalho de teste: preenche os 3 passos com dados ficticios, para conferir o
+   totem sem encarar o teclado da tela. O caminho fica Continuar, Continuar, Enviar.
+   Todo nome comeca com "TESTE " — e assim que se acha e apaga essas linhas na
+   planilha antes de entregar para a AMM. */
+function preencherTeste(){
+  const sorteia = a => a[Math.floor(Math.random() * a.length)];
+  const marca = (name, value) => {
+    const opts = $$('input[name="'+name+'"]');
+    const alvo = value ? opts.find(o => o.value === value) : sorteia(opts);
+    alvo.checked = true;
+    opts.forEach(o => o.closest(".chip").classList.toggle("on", o.checked));
+  };
+  const nome = sorteia(["Maria Aparecida","José Carlos","Ana Paula","João Batista","Luciana Ferreira","Marcos Antônio"]);
+  pickMun(sorteia(MUNICIPIOS));
+  marca("orgao", "Prefeitura");
+  $("#nome").value  = "TESTE " + nome;
+  marca("cargo");
+  const n = String(Math.floor(Math.random() * 1e4)).padStart(4, "0");
+  $("#fone").value  = "(31) 99999-" + n;
+  $("#email").value = "teste" + n + "@exemplo.com";
+  marca("proximo");
+  marca("quando");
+  $("#lgpd").checked = true; consent.classList.add("on");
+  $$(".f").forEach(f => f.classList.remove("err"));
+}
+
 $("#pincancel").addEventListener("click", fecharPainel);
 $("#close").addEventListener("click", fecharPainel);
 function fecharPainel(){

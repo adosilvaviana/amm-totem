@@ -113,6 +113,19 @@ curl -s "$L"     # → {"ok":true,"id":"T1","atualizado":false}
 **CORS:** o POST vai com `Content-Type: text/plain`, que é "simple request" e não dispara
 preflight — o Apps Script não responde preflight. Não troque para `application/json`.
 
+### Atalho de teste (preencher sem digitar)
+
+**2 toques rápidos no logo do cabeçalho** preenchem os 3 passos com dados fictícios
+(`preencherTeste()`): município sorteado, Prefeitura, nome `TESTE <nome>`, cargo, celular
+`(31) 99999-xxxx`, `testexxxx@exemplo.com`, formato e quando sorteados, LGPD marcado.
+O caminho fica **Continuar, Continuar, Enviar**. Mesma ideia do atalho do FENICS.
+
+O atalho espera 700 ms sem toque para decidir, então os 5 toques do painel não
+disparam o preenchimento no caminho. Um toque só não faz nada.
+
+**A ficha de teste vai para a planilha de verdade.** Todo nome começa com `TESTE ` e todo
+e-mail com `teste`: filtrar e apagar essas linhas antes de entregar para a AMM.
+
 ### Painel
 
 5 toques no logo + PIN `2026`. Mostra captadas / enviadas / na fila, exporta CSV (`;` e
@@ -174,7 +187,7 @@ aba vazia.
 - [x] Planilha ligada e testada de ponta a ponta em 19/10/2026 — ficha pelo endereço
       do Totem 1 chegou na aba `Adesões` com as 21 colunas certas, e o reenvio do mesmo
       `id` devolveu `atualizado:true` (atualiza a linha, não duplica)
-- [ ] **Apagar as linhas de teste** da planilha (`DIAG-001` e as que começam com `TESTE `)
+- [ ] **Apagar as linhas de teste** da planilha (`DIAG-001`, nomes `TESTE ` e o "Ado teste" de 20/10)
 - [ ] Testar nos 3 totens reais: touch, teclado na tela, brilho, tela cheia
 - [ ] Confirmar que o wi-fi do evento não bloqueia `script.google.com`
 
