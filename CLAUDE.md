@@ -63,6 +63,32 @@ Arquivo único, zero dependências, zero build: `index.html` + `logo-amm.png`.
 - **Não existe `<form>` no documento.** É de propósito: sem submit de formulário o Chrome
   nunca salva nem oferece os dados de um visitante para o próximo.
 
+### Teclado na tela (20/10/2026)
+
+**O Chrome no Windows dos totens não abria o teclado virtual do sistema** ao tocar nos
+campos. Depende de configuração do Windows e de a tela se apresentar como touch e não
+como mouse, então o totem traz o **próprio teclado** (`#kb`, funções `kb*`).
+
+- Todo campo digitável tem `data-kb` (`texto` / `email` / `numero`), `data-kbl` (rótulo
+  da faixa) e **`inputmode="none"`**: se o teclado do Windows passar a funcionar, ele não
+  aparece por cima do nosso. Teclado físico continua funcionando.
+- Digita sempre **no fim** do campo e dispara `input`: máscara do telefone e autocomplete
+  do município funcionam como digitação normal. Campo novo precisa só dos atributos.
+- A faixa no topo do teclado mostra o que está sendo digitado (PIN aparece como `•`).
+- Maiúscula automática no começo de cada palavra (nome, município); o ⇧ **inverte**, para
+  dar "da", "de". E-mail sempre minúsculo, com atalhos `.com`, `.gov.br`, `.mg.gov.br`.
+- Com o teclado aberto o passo rola (`body.kb-open`) e o campo sobe para cima dele.
+- `preventDefault` no `pointerdown`/`mousedown` do teclado mantém o foco no campo — e por
+  isso engole o `mousedown` do timer de inatividade: `kbTecla` chama `resetIdle()` à mão.
+- Campo focado por código (`.focus()`) precisa de `kbAbrir()` junto: o evento `focus` nem
+  sempre chega quando a janela não está em primeiro plano.
+
+### Fim do cadastro
+
+A confirmação **não mostra o telefone** da pessoa (pedido de 20/10/2026: a tela fica à
+vista do próximo da fila). "Novo cadastro" e a contagem de 12 s voltam para a **abertura
+azul**, não para o passo 1.
+
 ### Dimensionamento em `vh`, não em `px`
 
 Tudo — fonte, padding, altura de botão — está em `vh`. O motivo é o **zoom do Windows**:
